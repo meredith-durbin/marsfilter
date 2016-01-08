@@ -2,9 +2,7 @@ import base64
 import StringIO
 import cv2
 import numpy as np
-from flask import Flask
-from flask import render_template, request, redirect
-from flask import send_from_directory, url_for
+from flask import Flask, render_template, request, send_from_directory
 from PIL import Image
 from werkzeug import secure_filename
 
@@ -35,7 +33,7 @@ def main():
 			filetype = filename.split('.')[1].lower()
 			proc_filename = filename.split('.')[0] + '_mars.' + filetype
 			if filetype == 'jpg':
-				filetype = 'jpeg'
+				filetype = 'jpeg' # do i look like i know what a jpeg is
 			orig_image_array = cv2.imdecode(np.fromstring(file.read(), np.uint8),
 				cv2.CV_LOAD_IMAGE_UNCHANGED)
 			proc_image_array = filter_image(orig_image_array)
