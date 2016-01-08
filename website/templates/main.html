@@ -24,7 +24,7 @@
         <h1>#marsfilter</h1>
         <p>Upload an image and see what it would look like on Mars!</p>
 
-        <img class="upload responsive" src="data:image/{{filetype}};base64,{{orig_image}}">
+        <img class="upload responsive" src="data:image/{{filetype}};base64,{{orig_image | safe}}">
         <!-- <img class="upload responsive"  src="data:image/{{filetype}};base64,{{proc_image}}"> -->
         
          <form method="post" enctype="multipart/form-data">

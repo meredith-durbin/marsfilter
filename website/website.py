@@ -1,4 +1,6 @@
-import os
+import base64
+import cv2
+import numpy as np
 from flask import Flask
 from flask import render_template, request, redirect
 from flask import send_from_directory, url_for
@@ -25,16 +27,17 @@ def main():
 	if request.method == 'POST':
 		file = request.files['file']
 		if file and allowed_file(file.filename):
+			print file
 			filename = secure_filename(file.filename)
 			filetype = filename.split('.')[1]
 			proc_filename = filename.split('.')[0] + '_processed.' + filetype
-			orig_image = file.read().encode('base64').replace('\n', '')
-			# proc_image = file.read().encode('base64').replace('\n', '')
-			# file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			# orig_image = url_for('uploaded_file', filename=filename)
-			# proc_image = url_for('uploaded_file', filename=proc_filename)
+			readfile = file.read()
+			image_array = cv2.imdecode(np.fromstring(readfile, np.uint8),
+				cv2.CV_LOAD_IMAGE_UNCHANGED)
+			
+			orig_image = readfile.encode('base64').replace('\n', '')
 			return render_template('main.html',
-				orig_image=orig_image)#, proc_image = proc_image)
+				orig_image=orig_image, filetype=filetype)#, proc_image = proc_image)
 		else:
 			return 'There was a problem; please try again.'
 	else:
