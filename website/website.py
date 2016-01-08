@@ -1,9 +1,11 @@
 import base64
+import StringIO
 import cv2
 import numpy as np
 from flask import Flask
 from flask import render_template, request, redirect
 from flask import send_from_directory, url_for
+from PIL import Image
 from werkzeug import secure_filename
 
 UPLOAD_FOLDER = 'uploads'
@@ -17,33 +19,37 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-# @app.route('/uploads/<filename>')
-# def uploaded_file(filename):
-#     return send_from_directory(app.config['UPLOAD_FOLDER'],
-#                                filename)
+def filter_image(image_array):
+	mask = np.ones(image_array.shape)
+	mask[:,:,1] *= 0.465
+	mask[:,:,2] *= 0.25
+	marsimg = image_array*mask
+	return marsimg.astype('uint8')
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
 	if request.method == 'POST':
 		file = request.files['file']
 		if file and allowed_file(file.filename):
-			print file
 			filename = secure_filename(file.filename)
-			filetype = filename.split('.')[1]
-			proc_filename = filename.split('.')[0] + '_processed.' + filetype
-			readfile = file.read()
-			image_array = cv2.imdecode(np.fromstring(readfile, np.uint8),
+			filetype = filename.split('.')[1].lower()
+			proc_filename = filename.split('.')[0] + '_mars.' + filetype
+			if filetype == 'jpg':
+				filetype = 'jpeg'
+			orig_image_array = cv2.imdecode(np.fromstring(file.read(), np.uint8),
 				cv2.CV_LOAD_IMAGE_UNCHANGED)
-			
-			orig_image = readfile.encode('base64').replace('\n', '')
-			return render_template('main.html',
-				orig_image=orig_image, filetype=filetype)#, proc_image = proc_image)
+			proc_image_array = filter_image(orig_image_array)
+			proc_image_PIL = Image.fromarray(proc_image_array)
+			image_buffer = StringIO.StringIO()
+			proc_image_PIL.save(image_buffer, format=filetype.upper())
+			proc_image = base64.b64encode(image_buffer.getvalue())
+			return render_template('main.html', proc_image = proc_image,
+				proc_filename = proc_filename, filetype=filetype.lower())
 		else:
 			return 'There was a problem; please try again.'
 	else:
-		orig_image = open('static/orig_image.jpg').read().encode('base64').replace('\n', '')
-#		proc_image = url_for('static', filename='proc_image.jpg')
-		return render_template('main.html', orig_image=orig_image)#, proc_image = proc_image)
+		proc_image = open('static/mars_filter.jpg').read().encode('base64').replace('\n', '')
+		return render_template('main.html', proc_image = proc_image, filetype='jpg')
 
 if __name__ == '__main__':
 	app.debug = True

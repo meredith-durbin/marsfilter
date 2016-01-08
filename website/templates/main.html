@@ -23,14 +23,23 @@
 
         <h1>#marsfilter</h1>
         <p>Upload an image and see what it would look like on Mars!</p>
+        <p>Accepted file types: PNG, JPG; max file size: 1 MB</p>
 
-        <img class="upload responsive" src="data:image/{{filetype}};base64,{{orig_image | safe}}">
-        <!-- <img class="upload responsive"  src="data:image/{{filetype}};base64,{{proc_image}}"> -->
-        
-         <form method="post" enctype="multipart/form-data">
-          <input type="file" name="file" id="file" accept="image/*">
-          <input type="submit" value="Submit" class="btn btn-default">
-        </form> 
+        <div class="row">
+            <img class="img-fluid" src="data:image/{{filetype}};base64,{{proc_image | safe}}">
+        </div>
+
+        <p>        
+          <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" id="file" accept="image/*">
+            {% if proc_filename %}
+              <input type="submit" value="Upload another image" class="btn btn-default">
+              <a class='btn btn-default' href="data:image/{{filetype}};base64,{{proc_image | safe}}" download="{{proc_filename}}">Download image</a>
+            {% else %}
+              <input type="submit" value="Upload" class="btn btn-default">
+            {% endif %}
+          </form>
+        </p>
       </center>
     </div>
 
