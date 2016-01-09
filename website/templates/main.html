@@ -62,7 +62,6 @@
             <input type="file" name="file" id="file" accept="image/*">
             {% if proc_filename %}
               <a class='btn btn-default' href="data:image/{{filetype}};base64,{{proc_image | safe}}" download="{{proc_filename}}">Download image</a>
-              <br>
               <input type="submit" value="Upload another" class="btn btn-default">
             {% else %}
               <input type="submit" value="Upload" class="btn btn-default">
