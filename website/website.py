@@ -5,6 +5,7 @@ import numpy as np
 from flask import Flask, render_template, request, send_from_directory
 from PIL import Image
 from werkzeug import secure_filename
+from marsfilter import marsfilter
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -16,13 +17,6 @@ app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-def filter_image(image_array):
-	mask = np.ones(image_array.shape)
-	mask[:,:,1] *= 0.465
-	mask[:,:,2] *= 0.25
-	marsimg = image_array*mask
-	return marsimg.astype('uint8')
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
@@ -36,7 +30,7 @@ def main():
 				filetype = 'jpeg' # do i look like i know what a jpeg is
 			orig_image_array = cv2.imdecode(np.fromstring(file.read(), np.uint8),
 				cv2.CV_LOAD_IMAGE_UNCHANGED)
-			proc_image_array = filter_image(orig_image_array)
+			proc_image_array = marsfilter(orig_image_array)
 			proc_image_PIL = Image.fromarray(proc_image_array)
 			image_buffer = StringIO.StringIO()
 			proc_image_PIL.save(image_buffer, format=filetype.upper())
