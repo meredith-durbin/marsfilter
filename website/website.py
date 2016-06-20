@@ -1,10 +1,10 @@
-import base64
 # external libraries
+import base64
 import matplotlib.image as mpimg
 import numpy as np
 import os
 import StringIO
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, url_for
 from PIL import Image
 from werkzeug import secure_filename
 
@@ -44,10 +44,11 @@ def main():
 		else:
 			return 'There was a problem; please try again.'
 	else:
-		proc_image = open('website/static/mars_filter.jpg').read().encode('base64').replace('\n', '')
+		static_file = os.path.join('website/static', 'mars_filter.jpg')
+		proc_image = open(static_file).read().encode('base64').replace('\n', '')
 		return render_template('main.html', proc_image = proc_image, filetype='jpg')
 
 if __name__ == '__main__':
-	app.debug = False
+	app.debug = True
 	port = int(os.environ.get('PORT', 5000))
 	app.run(host='0.0.0.0', port=port)
