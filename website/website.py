@@ -1,11 +1,14 @@
 import base64
-import StringIO
-# import cv2
+# external libraries
 import matplotlib.image as mpimg
 import numpy as np
+import os
+import StringIO
 from flask import Flask, render_template, request, send_from_directory
 from PIL import Image
 from werkzeug import secure_filename
+
+# local import
 from marsfilter import marsfilter
 
 UPLOAD_FOLDER = 'uploads'
@@ -47,5 +50,4 @@ def main():
 if __name__ == '__main__':
 	app.debug = False
 	port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-	#app.run()
+	app.run(host='0.0.0.0', port=port)
