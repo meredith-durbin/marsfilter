@@ -44,7 +44,7 @@ def main():
 		else:
 			return 'There was a problem; please try again.'
 	else:
-		static_file = url_for('static', filename='mars_filter.jpg')
+		static_file = 'static/mars_filter.jpg' # url_for('static', filename='mars_filter.jpg')
 		proc_image = open(static_file).read().encode('base64').replace('\n', '')
 		return render_template('main.html', proc_image = proc_image, filetype='jpg')
 
