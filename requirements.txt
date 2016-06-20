@@ -1,6 +1,6 @@
 numpy
 scipy
-cv2
+matplotlib
 flask
 PIL
 werkzeug
