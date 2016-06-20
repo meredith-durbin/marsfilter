@@ -1,2 +1,1 @@
-web: sh -c 'cd website/'
-web: python website.py
+web: sh -c 'cd website/ && python website.py'
