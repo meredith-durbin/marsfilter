@@ -41,9 +41,9 @@ def main():
 		else:
 			return 'There was a problem; please try again.'
 	else:
-		proc_image = open('static/mars_filter.jpg').read().encode('base64').replace('\n', '')
+		proc_image = open('website/static/mars_filter.jpg').read().encode('base64').replace('\n', '')
 		return render_template('main.html', proc_image = proc_image, filetype='jpg')
 
 if __name__ == '__main__':
-	app.debug = True
+	app.debug = False
 	app.run()
