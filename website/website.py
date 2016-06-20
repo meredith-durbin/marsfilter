@@ -1,6 +1,7 @@
 import base64
 import StringIO
-import cv2
+# import cv2
+import matplotlib.image as mpimg
 import numpy as np
 from flask import Flask, render_template, request, send_from_directory
 from PIL import Image
@@ -28,8 +29,8 @@ def main():
 			proc_filename = filename.split('.')[0] + '_mars.' + filetype
 			if filetype == 'jpg':
 				filetype = 'jpeg' # do i look like i know what a jpeg is
-			orig_image_array = cv2.imdecode(np.fromstring(file.read(), np.uint8),
-				cv2.CV_LOAD_IMAGE_UNCHANGED)
+			orig_image_array = mpimg.imread(file) #cv2.imdecode(np.fromstring(file.read(), np.uint8),
+				#cv2.CV_LOAD_IMAGE_UNCHANGED)
 			proc_image_array = marsfilter(orig_image_array)
 			proc_image_PIL = Image.fromarray(proc_image_array)
 			image_buffer = StringIO.StringIO()
